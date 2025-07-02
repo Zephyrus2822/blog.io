@@ -1,22 +1,22 @@
-import { FaUser, FaEnvelope, FaLock, FaGoogle, FaFacebook } from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaGoogle, FaFacebook } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-const Signup = () => {
+const Login = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <nav className="flex justify-between items-center">
-            <a href="#" className="text-2xl font-bold text-gray-800">
+            <Link to="/" className="text-2xl font-bold text-gray-800">
               Blog<span className="text-blue-500">Sphere</span>
-            </a>
+            </Link>
             <div>
-              <Link
-                to={"/login"} 
+              <Link 
+                to="/signup" 
                 className="text-gray-600 hover:text-blue-500 font-medium"
               >
-                Already have an account?   Sign In
+                Don't have an account? Sign Up
               </Link>
             </div>
           </nav>
@@ -27,36 +27,15 @@ const Signup = () => {
       <main className="flex-grow flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="bg-white p-8 rounded-xl shadow-md">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Create your account</h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome back</h1>
             <p className="text-gray-600 mb-8">
-              Join our community of writers and readers today.
+              Log in to access your account and continue your writing journey.
             </p>
-
-           
 
             
 
-            {/* Signup Form */}
+            {/* Login Form */}
             <form className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaUser className="text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="John Doe"
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
-                </div>
-              </div>
-
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                   Email Address
@@ -93,40 +72,25 @@ const Signup = () => {
                     required
                   />
                 </div>
-                <p className="mt-1 text-xs text-gray-500">
-                  Password must be at least 8 characters long
-                </p>
-              </div>
-
-              <div>
-                <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaLock className="text-gray-400" />
-                  </div>
-                  <input
-                    type="password"
-                    id="confirm-password"
-                    name="confirm-password"
-                    placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
+                <div className="flex justify-end mt-2">
+                  <Link 
+                    to="/forgot-password" 
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
               </div>
 
               <div className="flex items-center">
                 <input
-                  id="terms"
-                  name="terms"
+                  id="remember-me"
+                  name="remember-me"
                   type="checkbox"
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  required
                 />
-                <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-                  I agree to the <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                  Remember me
                 </label>
               </div>
 
@@ -134,16 +98,16 @@ const Signup = () => {
                 type="submit"
                 className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
-                Create Account
+                Log In
               </button>
             </form>
           </div>
 
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              Already have an account?{' '}
-              <Link to = "/login" className="text-blue-600 font-medium hover:underline">
-                Sign in here
+              New to BlogSphere?{' '}
+              <Link to="/signup" className="text-blue-600 font-medium hover:underline">
+                Create an account
               </Link>
             </p>
           </div>
@@ -155,20 +119,20 @@ const Signup = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <a href="#" className="text-2xl font-bold">
+              <Link to="/" className="text-2xl font-bold">
                 Blog<span className="text-blue-400">Sphere</span>
-              </a>
+              </Link>
             </div>
             <div className="flex space-x-6">
-              <a href="#" className="text-gray-400 hover:text-white transition">
+              <Link to="/terms" className="text-gray-400 hover:text-white transition">
                 Terms
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition">
+              </Link>
+              <Link to="/privacy" className="text-gray-400 hover:text-white transition">
                 Privacy
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition">
+              </Link>
+              <Link to="/contact" className="text-gray-400 hover:text-white transition">
                 Contact
-              </a>
+              </Link>
             </div>
           </div>
           <div className="mt-6 text-center text-gray-400 text-sm">
@@ -180,4 +144,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Login;
