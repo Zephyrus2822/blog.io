@@ -1,5 +1,6 @@
 import { FiEdit, FiUsers, FiTrendingUp, FiBookmark } from 'react-icons/fi';
 import { FaTwitter, FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const Landing = () => {
   const features = [
@@ -38,12 +39,12 @@ const Landing = () => {
             
             
             <div className="flex space-x-4">
-              <a href="#" className="px-4 py-2 border border-blue-500 text-blue-500 rounded-md font-medium hover:bg-blue-500 hover:text-white transition">
+              <Link to={'/login'} f="#" className="px-4 py-2 border border-blue-500 text-blue-500 rounded-md font-medium hover:bg-blue-500 hover:text-white transition">
                 Sign In
-              </a>
-              <a href="#" className="px-4 py-2 bg-blue-500 text-white rounded-md font-medium hover:bg-blue-600 transition">
+              </Link>
+              <Link to={'/signup'} className="px-4 py-2 bg-blue-500 text-white rounded-md font-medium hover:bg-blue-600 transition">
                 Sign Up
-              </a>
+              </Link>
             </div>
           </nav>
         </div>
