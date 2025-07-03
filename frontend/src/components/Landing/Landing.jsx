@@ -27,22 +27,20 @@ const Landing = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-indigo-100">
       {/* Header */}
-      <header className="bg-white shadow-sm fixed w-full z-50">
+      <header className="bg-white/80 shadow-sm fixed w-full z-50 backdrop-blur-md">
         <div className="container mx-auto px-4 py-4">
           <nav className="flex justify-between items-center">
-            <a href="#" className="text-2xl font-bold text-gray-800">
+            <a href="#" className="text-2xl font-extrabold text-gray-800 tracking-tight flex items-center gap-1">
+              <span className="inline-block w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></span>
               Blog<span className="text-blue-500">Sphere</span>
             </a>
-            
-            
-            
             <div className="flex space-x-4">
-              <Link to={'/login'} f="#" className="px-4 py-2 border border-blue-500 text-blue-500 rounded-md font-medium hover:bg-blue-500 hover:text-white transition">
+              <Link to={'/login'} className="px-4 py-2 border border-blue-500 text-blue-500 rounded-md font-medium hover:bg-blue-500 hover:text-white transition shadow-sm">
                 Sign In
               </Link>
-              <Link to={'/signup'} className="px-4 py-2 bg-blue-500 text-white rounded-md font-medium hover:bg-blue-600 transition">
+              <Link to={'/signup'} className="px-4 py-2 bg-blue-500 text-white rounded-md font-medium hover:bg-blue-600 transition shadow-lg">
                 Sign Up
               </Link>
             </div>
@@ -53,9 +51,11 @@ const Landing = () => {
       {/* Main Content */}
       <main className="flex-grow pt-16">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-50 to-indigo-100 pt-32 pb-20 px-4">
+        <section className="bg-gradient-to-r from-blue-50 to-indigo-100 pt-32 pb-20 px-4 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-40 h-40 bg-blue-200 rounded-full opacity-30 blur-2xl -z-10 animate-float"></div>
+          <div className="absolute bottom-0 right-0 w-60 h-60 bg-indigo-200 rounded-full opacity-30 blur-2xl -z-10 animate-float2"></div>
           <div className="container mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-800 mb-6 drop-shadow-lg">
               Share Your Thoughts with the World
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">
@@ -64,11 +64,11 @@ const Landing = () => {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <a 
                 href="#" 
-                className="px-8 py-3 bg-blue-500 text-white rounded-lg font-semibold text-lg hover:bg-blue-600 transition shadow-lg"
+                className="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg font-semibold text-lg hover:scale-105 transition shadow-xl border-2 border-blue-400 hover:border-indigo-500 flex items-center gap-2 group"
               >
+                <svg className="w-6 h-6 text-white group-hover:animate-bounce" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 Get Started
               </a>
-             
             </div>
           </div>
         </section>
@@ -82,17 +82,17 @@ const Landing = () => {
                 We provide everything you need to start sharing your ideas with the world.
               </p>
             </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {features.map((feature, index) => (
                 <div 
                   key={index}
-                  className="bg-gray-50 p-8 rounded-xl hover:shadow-lg transition cursor-pointer"
+                  className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-xl hover:shadow-2xl transition cursor-pointer border border-blue-100 hover:border-blue-300 group relative overflow-hidden"
                 >
-                  <div className="text-blue-500 mb-4">
+                  <div className="absolute -top-4 -right-4 w-16 h-16 bg-blue-100 rounded-full opacity-20 group-hover:scale-125 transition-transform"></div>
+                  <div className="text-blue-500 mb-4 group-hover:scale-110 transition-transform">
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-3">{feature.title}</h3>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors">{feature.title}</h3>
                   <p className="text-gray-600">{feature.description}</p>
                 </div>
               ))}
@@ -109,11 +109,10 @@ const Landing = () => {
                 Don't just take our word for it - hear from our community.
               </p>
             </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-xl shadow-md">
-                <div className="text-yellow-400 mb-4">★★★★★</div>
-                <p className="text-gray-600 mb-6">
+              <div className="bg-white p-8 rounded-xl shadow-md border-t-4 border-blue-400 hover:scale-105 transition-transform">
+                <div className="text-yellow-400 mb-4 text-2xl">★★★★★</div>
+                <p className="text-gray-600 mb-6 italic">
                   "BlogSphere has completely changed how I share my travel experiences. The interface is so easy to use!"
                 </p>
                 <div className="flex items-center">
@@ -124,10 +123,9 @@ const Landing = () => {
                   </div>
                 </div>
               </div>
-              
-              <div className="bg-white p-8 rounded-xl shadow-md">
-                <div className="text-yellow-400 mb-4">★★★★☆</div>
-                <p className="text-gray-600 mb-6">
+              <div className="bg-white p-8 rounded-xl shadow-md border-t-4 border-indigo-400 hover:scale-105 transition-transform">
+                <div className="text-yellow-400 mb-4 text-2xl">★★★★☆</div>
+                <p className="text-gray-600 mb-6 italic">
                   "As a tech writer, I appreciate the clean formatting options and the engaged community of readers."
                 </p>
                 <div className="flex items-center">
@@ -138,10 +136,9 @@ const Landing = () => {
                   </div>
                 </div>
               </div>
-              
-              <div className="bg-white p-8 rounded-xl shadow-md">
-                <div className="text-yellow-400 mb-4">★★★★★</div>
-                <p className="text-gray-600 mb-6">
+              <div className="bg-white p-8 rounded-xl shadow-md border-t-4 border-blue-400 hover:scale-105 transition-transform">
+                <div className="text-yellow-400 mb-4 text-2xl">★★★★★</div>
+                <p className="text-gray-600 mb-6 italic">
                   "I've grown my food blog audience by 300% since switching to BlogSphere. The analytics tools are fantastic."
                 </p>
                 <div className="flex items-center">
@@ -162,7 +159,9 @@ const Landing = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             <div>
-              <h3 className="text-2xl font-bold mb-4">Blog<span className="text-blue-400">Sphere</span></h3>
+              <h3 className="text-2xl font-bold mb-4 flex items-center gap-1">Blog<span className="text-blue-400">Sphere</span>
+                <span className="inline-block w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+              </h3>
               <p className="text-gray-400">
                 The best platform for writers and readers to connect and share ideas.
               </p>
