@@ -116,7 +116,7 @@ const Landing = () => {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <a
-                href="#"
+                href="/blogpage"
                 className="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg font-semibold text-lg hover:scale-105 transition shadow-xl border-2 border-blue-400 hover:border-indigo-500 flex items-center gap-2 group"
               >
                 <svg

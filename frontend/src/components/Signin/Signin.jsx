@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
@@ -24,7 +23,7 @@ const Login = () => {
         }
       );
       localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("toke", data.token);
+      localStorage.setItem("token", data.token);
 
       navigate("/");
     } catch (error) {

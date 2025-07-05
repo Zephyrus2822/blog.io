@@ -23,7 +23,7 @@ export const getPosts = async (req, res) => {
       ? { title: { $regex: req.query.search, $options: 'i' } }
       : {};
     const posts = await Post.find(keyword).populate('author', 'name');
-    res.json(posts);
+    res.json({posts});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -37,7 +37,8 @@ export const getPostById = async (req, res) => {
       .populate({
         path: 'comments',
         populate: { path: 'author', select: 'name' },
-      });
+      })
+      .sort({createdAt : -1});
     if (!post) return res.status(404).json({ message: 'Post not found' });
     res.json(post);
   } catch (error) {
