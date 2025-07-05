@@ -1,7 +1,39 @@
-import { FaEnvelope, FaLock, FaGoogle, FaFacebook } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { FaEnvelope, FaLock, FaGoogle, FaFacebook } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    try {
+      const { data } = await axios.post(
+        "http://localhost:5001/api/auth/login",
+        {
+          email,
+          password,
+        }
+      );
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("toke", data.token);
+
+      navigate("/");
+    } catch (error) {
+      const err_message =
+        error.response?.data?.message || "Login Failed. Please try Again!";
+      setErrorMessage(err_message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
@@ -12,8 +44,8 @@ const Login = () => {
               Blog<span className="text-blue-500">Sphere</span>
             </Link>
             <div>
-              <Link 
-                to="/signup" 
+              <Link
+                to="/signup"
                 className="text-gray-600 hover:text-blue-500 font-medium"
               >
                 Don't have an account? Sign Up
@@ -27,17 +59,26 @@ const Login = () => {
       <main className="flex-grow flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="bg-white p-8 rounded-xl shadow-md">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome back</h1>
-            <p className="text-gray-600 mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              Welcome back
+            </h1>
+            <p className="text-gray-600 mb-6">
               Log in to access your account and continue your writing journey.
             </p>
 
-            
+            {errorMessage && (
+              <div className="mb-4 text-red-600 bg-red-100 p-3 rounded-lg text-sm">
+                {errorMessage}
+              </div>
+            )}
 
             {/* Login Form */}
-            <form className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Email Address
                 </label>
                 <div className="relative">
@@ -49,6 +90,8 @@ const Login = () => {
                     id="email"
                     name="email"
                     placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
@@ -56,7 +99,10 @@ const Login = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -68,13 +114,15 @@ const Login = () => {
                     id="password"
                     name="password"
                     placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
                 </div>
                 <div className="flex justify-end mt-2">
-                  <Link 
-                    to="/forgot-password" 
+                  <Link
+                    to="/forgot-password"
                     className="text-sm text-blue-600 hover:underline"
                   >
                     Forgot password?
@@ -89,7 +137,10 @@ const Login = () => {
                   type="checkbox"
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                <label
+                  htmlFor="remember-me"
+                  className="ml-2 block text-sm text-gray-700"
+                >
                   Remember me
                 </label>
               </div>
@@ -105,8 +156,11 @@ const Login = () => {
 
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              New to BlogSphere?{' '}
-              <Link to="/signup" className="text-blue-600 font-medium hover:underline">
+              New to BlogSphere?{" "}
+              <Link
+                to="/signup"
+                className="text-blue-600 font-medium hover:underline"
+              >
                 Create an account
               </Link>
             </p>
@@ -124,19 +178,30 @@ const Login = () => {
               </Link>
             </div>
             <div className="flex space-x-6">
-              <Link to="/terms" className="text-gray-400 hover:text-white transition">
+              <Link
+                to="/terms"
+                className="text-gray-400 hover:text-white transition"
+              >
                 Terms
               </Link>
-              <Link to="/privacy" className="text-gray-400 hover:text-white transition">
+              <Link
+                to="/privacy"
+                className="text-gray-400 hover:text-white transition"
+              >
                 Privacy
               </Link>
-              <Link to="/contact" className="text-gray-400 hover:text-white transition">
+              <Link
+                to="/contact"
+                className="text-gray-400 hover:text-white transition"
+              >
                 Contact
               </Link>
             </div>
           </div>
           <div className="mt-6 text-center text-gray-400 text-sm">
-            <p>&copy; {new Date().getFullYear()} BlogSphere. All rights reserved.</p>
+            <p>
+              &copy; {new Date().getFullYear()} BlogSphere. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>

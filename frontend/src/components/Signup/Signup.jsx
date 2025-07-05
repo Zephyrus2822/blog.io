@@ -1,22 +1,73 @@
-import { FaUser, FaEnvelope, FaLock, FaGoogle, FaFacebook } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Signup = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [errorMsg, setErrorMsg] = useState("");
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setErrorMsg("");
+
+    const { name, email, password, confirmPassword } = formData;
+
+    if (password !== confirmPassword) {
+      return setErrorMsg("Passwords do not match.");
+    }
+
+    if (password.length < 8) {
+      return setErrorMsg("Password must be at least 8 characters.");
+    }
+
+    try {
+      const { data } = await axios.post(
+        "http://localhost:5001/api/auth/register",
+        {
+          name,
+          email,
+          password,
+        }
+      );
+
+      // Save to localStorage
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
+
+      // Redirect to home
+      navigate("/");
+    } catch (err) {
+      const msg = err.response?.data?.message || "Registration failed.";
+      setErrorMsg(msg);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <nav className="flex justify-between items-center">
-            <a href="#" className="text-2xl font-bold text-gray-800">
+            <Link to="/" className="text-2xl font-bold text-gray-800">
               Blog<span className="text-blue-500">Sphere</span>
-            </a>
+            </Link>
             <div>
               <Link
-                to={"/login"} 
+                to="/login"
                 className="text-gray-600 hover:text-blue-500 font-medium"
               >
-                Already have an account?   Sign In
+                Already have an account? Sign In
               </Link>
             </div>
           </nav>
@@ -27,19 +78,26 @@ const Signup = () => {
       <main className="flex-grow flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="bg-white p-8 rounded-xl shadow-md">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Create your account</h1>
-            <p className="text-gray-600 mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              Create your account
+            </h1>
+            <p className="text-gray-600 mb-6">
               Join our community of writers and readers today.
             </p>
 
-           
-
-            
+            {errorMsg && (
+              <div className="mb-4 text-red-600 bg-red-100 p-3 rounded-lg text-sm">
+                {errorMsg}
+              </div>
+            )}
 
             {/* Signup Form */}
-            <form className="space-y-4">
+            <form onSubmit={handleSignup} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Full Name
                 </label>
                 <div className="relative">
@@ -51,6 +109,8 @@ const Signup = () => {
                     id="name"
                     name="name"
                     placeholder="John Doe"
+                    value={formData.name}
+                    onChange={handleChange}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
@@ -58,7 +118,10 @@ const Signup = () => {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Email Address
                 </label>
                 <div className="relative">
@@ -70,6 +133,8 @@ const Signup = () => {
                     id="email"
                     name="email"
                     placeholder="you@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
@@ -77,7 +142,10 @@ const Signup = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -89,6 +157,8 @@ const Signup = () => {
                     id="password"
                     name="password"
                     placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
@@ -99,7 +169,10 @@ const Signup = () => {
               </div>
 
               <div>
-                <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Confirm Password
                 </label>
                 <div className="relative">
@@ -108,9 +181,11 @@ const Signup = () => {
                   </div>
                   <input
                     type="password"
-                    id="confirm-password"
-                    name="confirm-password"
+                    id="confirmPassword"
+                    name="confirmPassword"
                     placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
@@ -125,8 +200,18 @@ const Signup = () => {
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   required
                 />
-                <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-                  I agree to the <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>
+                <label
+                  htmlFor="terms"
+                  className="ml-2 block text-sm text-gray-700"
+                >
+                  I agree to the{" "}
+                  <a href="#" className="text-blue-600 hover:underline">
+                    Terms of Service
+                  </a>{" "}
+                  and{" "}
+                  <a href="#" className="text-blue-600 hover:underline">
+                    Privacy Policy
+                  </a>
                 </label>
               </div>
 
@@ -141,8 +226,11 @@ const Signup = () => {
 
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              Already have an account?{' '}
-              <Link to = "/login" className="text-blue-600 font-medium hover:underline">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="text-blue-600 font-medium hover:underline"
+              >
                 Sign in here
               </Link>
             </p>
@@ -155,9 +243,9 @@ const Signup = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <a href="#" className="text-2xl font-bold">
+              <Link to="/" className="text-2xl font-bold">
                 Blog<span className="text-blue-400">Sphere</span>
-              </a>
+              </Link>
             </div>
             <div className="flex space-x-6">
               <a href="#" className="text-gray-400 hover:text-white transition">
@@ -172,7 +260,9 @@ const Signup = () => {
             </div>
           </div>
           <div className="mt-6 text-center text-gray-400 text-sm">
-            <p>&copy; {new Date().getFullYear()} BlogSphere. All rights reserved.</p>
+            <p>
+              &copy; {new Date().getFullYear()} BlogSphere. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
