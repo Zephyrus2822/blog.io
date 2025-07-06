@@ -8,6 +8,7 @@
     // Routes
     import authRoutes from './routes/authRoutes.js';
     import postRoutes from './routes/postRoutes.js';
+    import commentRoutes from './routes/commentRoutes.js';
     // (add postRoutes, userRoutes, commentRoutes as needed)
 
     dotenv.config();
@@ -18,6 +19,7 @@
     app.use(cors());
     app.use(morgan('dev'));
     app.use('/api/posts', postRoutes);
+    app.use('/api/posts', commentRoutes);
 
     // API Routes
     app.use('/api/auth', authRoutes);

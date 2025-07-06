@@ -1,5 +1,7 @@
 import Post from '../models/Post.js';
 import mongoose from 'mongoose';
+import Comment from '../models/Comment.js';
+
 
 // @desc Create a new post
 export const createPost = async (req, res) => {
@@ -84,25 +86,24 @@ export const deletePost = async (req, res) => {
   }
 };
 
-// @desc Like/unlike a post
+export const createComment = async (req, res) => {
+  const { content } = req.body;
+  const postId = req.params.id;
+  const author = req.user._id;
+  if (!content) return res.status(400).json({ message: 'Comment required' });
+  const comment = await Comment.create({ content, author, post: postId });
+  await Post.findByIdAndUpdate(postId, { $push: { comments: comment._id } });
+  const populated = await comment.populate('author', 'name');
+  res.status(201).json(populated);
+};
+
 export const toggleLike = async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: 'Post not found' });
-
-    const userId = req.user._id;
-    const index = post.likes.indexOf(userId);
-
-    if (index === -1) {
-      post.likes.push(userId);
-      await post.save();
-      return res.json({ message: 'Post liked' });
-    } else {
-      post.likes.splice(index, 1);
-      await post.save();
-      return res.json({ message: 'Post unliked' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  const post = await Post.findById(req.params.id);
+  const userId = req.user._id;
+  if (!post) return res.status(404).json({ message: 'Post not found' });
+  const hasLiked = post.likes.includes(userId);
+  if (hasLiked) post.likes.pull(userId);
+  else post.likes.push(userId);
+  await post.save();
+  res.json({ likes: post.likes.length, liked: !hasLiked });
 };
