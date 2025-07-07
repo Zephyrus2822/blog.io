@@ -1,74 +1,111 @@
-import React, { useState, useEffect } from 'react';
-import './Dashboard.css';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { motion } from "framer-motion";
+import Modal from "react-modal";
+
+Modal.setAppElement("#root");
 
 const Dashboard = () => {
-  const [users, setUsers] = useState([]);
-  const [blogs, setBlogs] = useState([]);
-  const [activityLogs, setActivityLogs] = useState([]);
+  const [metrics, setMetrics] = useState(null);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    // Fetch users, blogs, and activity logs from the backend
-    fetch('/api/users')
-      .then((res) => res.json())
-      .then((data) => setUsers(data));
+    const fetchMetrics = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:5001/api/posts/dashboard",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setMetrics(res.data);
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+      }
+    };
+    fetchMetrics();
+  }, [token]);
 
-    fetch('/api/blogs')
-      .then((res) => res.json())
-      .then((data) => setBlogs(data));
-
-    fetch('/api/activity-logs')
-      .then((res) => res.json())
-      .then((data) => setActivityLogs(data));
-  }, []);
-
-  const deleteUser = (userId) => {
-    // Delete user API call
-    fetch(`/api/users/${userId}`, { method: 'DELETE' })
-      .then(() => setUsers(users.filter((user) => user.id !== userId)));
-  };
-
-  const deleteBlog = (blogId) => {
-    // Delete blog API call
-    fetch(`/api/blogs/${blogId}`, { method: 'DELETE' })
-      .then(() => setBlogs(blogs.filter((blog) => blog.id !== blogId)));
-  };
+  if (!metrics) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="loader">Loading dashboard...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="dashboard">
-      <h1>Admin Dashboard</h1>
+    <div className="min-h-screen bg-gray-100 p-8">
+      <motion.h1
+        className="text-3xl font-bold text-gray-800 mb-6"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        Your Dashboard
+      </motion.h1>
 
-      <section>
-        <h2>Users</h2>
-        <ul>
-          {users.map((user) => (
-            <li key={user.id}>
-              {user.name} ({user.email})
-              <button onClick={() => deleteUser(user.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mb-8">
+        {[
+          {
+            label: "Your Posts",
+            value: metrics.postsCount,
+            color: "bg-blue-500",
+          },
+          {
+            label: "Total Likes Received",
+            value: metrics.likesReceived,
+            color: "bg-green-500",
+          },
+          {
+            label: "Your Comments",
+            value: metrics.commentsCount,
+            color: "bg-yellow-500",
+          },
+        ].map((card) => (
+          <motion.div
+            key={card.label}
+            className={`rounded-lg shadow-lg p-6 text-white ${card.color}`}
+            whileHover={{ scale: 1.03 }}
+          >
+            <div className="text-sm">{card.label}</div>
+            <div className="text-2xl font-semibold">{card.value}</div>
+          </motion.div>
+        ))}
+      </div>
 
-      <section>
-        <h2>Blogs</h2>
-        <ul>
-          {blogs.map((blog) => (
-            <li key={blog.id}>
-              {blog.title}
-              <button onClick={() => deleteBlog(blog.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section>
-        <h2>Activity Logs</h2>
-        <ul>
-          {activityLogs.map((log, index) => (
-            <li key={index}>{log}</li>
-          ))}
-        </ul>
-      </section>
+      <motion.div
+        className="bg-white rounded-lg shadow-lg p-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <h2 className="text-xl font-bold mb-4 text-gray-800">
+          Likes Over Time
+        </h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={metrics.likesTimeline}>
+            <CartesianGrid stroke="#eee" />
+            <XAxis dataKey="date" stroke="#888" />
+            <YAxis stroke="#888" />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="count"
+              stroke="#00aaff"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </motion.div>
     </div>
   );
 };

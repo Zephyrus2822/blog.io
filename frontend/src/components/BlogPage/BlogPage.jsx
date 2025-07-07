@@ -27,7 +27,7 @@ const BlogPage = () => {
   const [repliesMap, setRepliesMap] = useState({});
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
-
+  const isLoggedIn = !!token;
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -180,7 +180,10 @@ const BlogPage = () => {
               .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
               .map((post) => {
                 const liked =
-                  Array.isArray(post.likes) && post.likes.includes(user._id);
+                  Array.isArray(post.likes) &&
+                  user?._id &&
+                  post.likes.includes(user?._id);
+
                 return (
                   <motion.div
                     key={post._id}
@@ -197,7 +200,7 @@ const BlogPage = () => {
                           {post.title}
                         </h2>
                       </Link>
-                      {post.author?._id === user._id && (
+                      {post.author?._id === user?._id && (
                         <button
                           onClick={() => handleDeletePost(post._id)}
                           className="text-sm text-red-500 flex items-center gap-1"
@@ -224,7 +227,11 @@ const BlogPage = () => {
 
                     <div className="flex gap-6 items-center">
                       <motion.button
-                        onClick={() => handleLike(post._id)}
+                        onClick={() => {
+                          if (!isLoggedIn)
+                            return alert("Please log in to like a post.");
+                          handleLike(post._id);
+                        }}
                         className={`flex items-center gap-1 font-medium transition duration-200 ${
                           liked ? "text-red-500" : "text-gray-500"
                         }`}
@@ -286,7 +293,7 @@ const BlogPage = () => {
                                       comment.text
                                     )}
                                   </span>
-                                  {comment.author?._id === user._id && (
+                                  {comment.author?._id === user?._id && (
                                     <div className="flex gap-2 items-center ml-4">
                                       <button
                                         className="text-xs text-blue-500"
@@ -350,7 +357,11 @@ const BlogPage = () => {
                               }
                             />
                             <button
-                              onClick={() => handleCommentSubmit(post._id)}
+                              onClick={() => {
+                                if (!isLoggedIn)
+                                  return alert("Please log in to comment.");
+                                handleCommentSubmit(post._id);
+                              }}
                               className="bg-blue-500 text-white px-3 rounded hover:bg-blue-600 transition"
                             >
                               Post

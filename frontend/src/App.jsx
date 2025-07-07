@@ -11,10 +11,10 @@ import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import BlogPage from "./components/BlogPage/BlogPage.jsx";
 import "./App.css";
 
-function isAdmin() {
-  // Replace with actual admin check logic
-  return localStorage.getItem("role") === "admin";
-}
+// function isAdmin() {
+
+//   return localStorage.getItem("role") === "admin";
+// }
 
 function App() {
   return (
@@ -23,10 +23,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route
-          path="/dashboard"
-          element={isAdmin() ? <Dashboard /> : <Navigate to="/login" />}
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/blogpage" element={<BlogPage />} />
       </Routes>
     </Router>
