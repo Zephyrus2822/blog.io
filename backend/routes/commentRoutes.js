@@ -5,22 +5,26 @@ import Comment from "../models/Comment.js";
 
 const router = express.Router();
 
-// CREATE a comment on a blog post
-router.post("/:postId/comments", protect, async (req, res) => {
+/**
+ * CREATE comment on a post
+ * Endpoint: POST /api/posts/:postId/comments
+ */
+router.post("/:postId", protect, async (req, res) => {
   try {
-    console.log("Incoming comment payload:", req.body);
     const { text, parentId } = req.body;
     const { postId } = req.params;
 
-    if (!text || text.trim() === "") {
-      console.warn("Empty comment text received.");
-      return res.status(400).json({ message: "Comment text is required." });
+    console.log("💬 Incoming comment payload:", req.body);
+
+    if (!text) {
+      console.warn("⚠️ Empty comment text received.");
+      return res.status(400).json({ message: "Comment required" });
     }
 
     const newComment = new Comment({
       post: postId,
       author: req.user.id,
-      text,
+      text: text.trim(),
       parent: parentId || null,
     });
 
@@ -34,16 +38,16 @@ router.post("/:postId/comments", protect, async (req, res) => {
 
     res.status(201).json({ comment: populatedComment });
   } catch (err) {
-    console.error("🔥 Error creating comment:");
-    console.error("Message:", err.message);
-    console.error("Stack Trace:", err.stack);
-    console.error("Full Error:", err);
+    console.error("🔥 Error creating comment:", err.message);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-// GET all comments for a blog post (with nested replies)
-router.get("/:postId/comments", async (req, res) => {
+/**
+ * GET all comments for a blog post
+ * Endpoint: GET /api/posts/:postId/comments
+ */
+router.get("/:postId", async (req, res) => {
   try {
     const { postId } = req.params;
 
@@ -69,74 +73,68 @@ router.get("/:postId/comments", async (req, res) => {
 
     res.status(200).json({ comments: threaded });
   } catch (err) {
-    console.error("🔥 Error fetching comments:");
-    console.error("Message:", err.message);
-    console.error("Stack Trace:", err.stack);
-    console.error("Full Error:", err);
+    console.error("🔥 Error fetching comments:", err.message);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-// EDIT a comment
-router.put("/comments/:commentId", protect, async (req, res) => {
+/**
+ * EDIT comment
+ * Endpoint: PUT /api/posts/comments/:commentId
+ */
+router.put("/:commentId", protect, async (req, res) => {
   try {
     const { commentId } = req.params;
     const { text } = req.body;
 
+    if (!text || text.trim() === "") {
+      return res.status(400).json({ message: "Comment required" });
+    }
+
     const comment = await Comment.findById(commentId);
     if (!comment) {
-      console.warn(`Comment with ID ${commentId} not found.`);
       return res.status(404).json({ message: "Comment not found" });
     }
 
     if (comment.author.toString() !== req.user.id) {
-      console.warn(`User ${req.user.id} is not authorized to edit comment ${commentId}.`);
-      return res.status(403).json({ message: "Not authorized to edit this comment" });
+      return res.status(403).json({ message: "Not authorized" });
     }
 
-    comment.text = text;
+    comment.text = text.trim();
     await comment.save();
 
     const updatedComment = await comment.populate("author", "name");
 
     res.status(200).json({ comment: updatedComment });
   } catch (err) {
-    console.error("🔥 Error updating comment:");
-    console.error("Message:", err.message);
-    console.error("Stack Trace:", err.stack);
-    console.error("Full Error:", err);
+    console.error("🔥 Error updating comment:", err.message);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-// DELETE a comment
-router.delete("/comments/:commentId", protect, async (req, res) => {
+/**
+ * DELETE comment
+ * Endpoint: DELETE /api/posts/comments/:commentId
+ */
+router.delete("/:commentId", protect, async (req, res) => {
   try {
     const { commentId } = req.params;
 
     const comment = await Comment.findById(commentId);
     if (!comment) {
-      console.warn(`Comment with ID ${commentId} not found.`);
       return res.status(404).json({ message: "Comment not found" });
     }
 
     if (comment.author.toString() !== req.user.id) {
-      console.warn(`User ${req.user.id} is not authorized to delete comment ${commentId}.`);
-      return res.status(403).json({ message: "Not authorized to delete this comment" });
+      return res.status(403).json({ message: "Not authorized" });
     }
 
     await Comment.deleteOne({ _id: commentId });
-    await Post.updateOne(
-      { _id: comment.post },
-      { $pull: { comments: commentId } }
-    );
+    await Post.updateOne({ _id: comment.post }, { $pull: { comments: commentId } });
 
     res.status(200).json({ message: "Comment deleted" });
   } catch (err) {
-    console.error("🔥 Error deleting comment:");
-    console.error("Message:", err.message);
-    console.error("Stack Trace:", err.stack);
-    console.error("Full Error:", err);
+    console.error("🔥 Error deleting comment:", err.message);
     res.status(500).json({ message: "Internal server error" });
   }
 });

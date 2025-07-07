@@ -19,7 +19,7 @@
     app.use(cors());
     app.use(morgan('dev'));
     app.use('/api/posts', postRoutes);
-    app.use('/api/posts', commentRoutes);
+    app.use('/api/comments', commentRoutes);
 
     // API Routes
     app.use('/api/auth', authRoutes);

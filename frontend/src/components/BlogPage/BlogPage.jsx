@@ -9,6 +9,7 @@ import {
   FiHeart,
   FiEdit2,
   FiMessageCircle,
+  FiTrash2,
 } from "react-icons/fi";
 
 Modal.setAppElement("#root");
@@ -27,6 +28,10 @@ const BlogPage = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
 
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   const fetchPosts = async () => {
     try {
       const res = await axios.get("http://localhost:5001/api/posts");
@@ -39,17 +44,13 @@ const BlogPage = () => {
   const fetchComments = async (postId) => {
     try {
       const res = await axios.get(
-        `http://localhost:5001/api/posts/${postId}/comments`
+        `http://localhost:5001/api/comments/${postId}`
       );
       setCommentsMap((prev) => ({ ...prev, [postId]: res.data.comments }));
     } catch (err) {
       console.error(err);
     }
   };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
 
   const handleSubmit = async () => {
     if (!title || !content) return;
@@ -60,62 +61,49 @@ const BlogPage = () => {
         { title, body: content },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setLoading(false);
       setModalIsOpen(false);
       setTitle("");
       setContent("");
       fetchPosts();
     } catch (err) {
       console.error(err);
+    } finally {
       setLoading(false);
     }
   };
 
   const handleLike = async (postId) => {
     try {
-      const res = await axios.post(
+      const res = await axios.put(
         `http://localhost:5001/api/posts/${postId}/like`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setPosts((prev) =>
         prev.map((p) =>
-          p._id === postId
-            ? { ...p, likes: res.data.likes } // likes already toggled on backend
-            : p
+          p._id === postId ? { ...p, likes: res.data.likes } : p
         )
       );
     } catch (err) {
       console.error("Like error:", err);
     }
   };
-  const handleCommentSubmit = async (postId, parentId = null) => {
-    const rawText = newComments[postId];
-    const commentText = rawText?.trim();
-    console.log("Sending comment:", newComments[postId]);
 
+  const handleCommentSubmit = async (postId, parentId = null) => {
+    const commentText = newComments[postId]?.trim();
     if (!commentText) return;
 
-    // ✅ Build payload only with needed fields
     const payload = { text: commentText };
-    if (parentId) {
-      payload.parentId = parentId;
-    }
+    if (parentId) payload.parentId = parentId;
 
     try {
-      console.log("Sending payload:", payload); // Debug log
-
       await axios.post(
-        `http://localhost:5001/api/posts/${postId}/comments`,
+        `http://localhost:5001/api/comments/${postId}`,
         payload,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       fetchComments(postId);
       setNewComments((prev) => ({ ...prev, [postId]: "" }));
     } catch (err) {
@@ -124,22 +112,43 @@ const BlogPage = () => {
   };
 
   const handleCommentEdit = async (postId, commentId, newText) => {
-    console.log("🛠 Editing comment:", postId, commentId, newText);
+    const trimmed = newText.trim();
+    if (!trimmed) return;
 
     try {
       await axios.put(
-        `http://localhost:5001/api/posts/comments/${commentId}`,
-        { text: newText },
+        `http://localhost:5001/api/comments/${commentId}`,
+        { text: trimmed },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("Sending comment update:", { text: newText });
-      if (!newText || newText.trim() === "") {
-        console.warn("⚠️ Empty newText provided.");
-      }
       fetchComments(postId);
       setEditingComment(null);
     } catch (err) {
       console.error("Edit error:", err.response?.data || err.message);
+    }
+  };
+
+  const handleDeleteComment = async (commentId, postId) => {
+    try {
+      await axios.delete(`http://localhost:5001/api/comments/${commentId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchComments(postId);
+    } catch (err) {
+      console.error("Delete comment error:", err);
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+
+    try {
+      await axios.delete(`http://localhost:5001/api/posts/${postId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchPosts();
+    } catch (err) {
+      console.error("Delete post error:", err);
     }
   };
 
@@ -163,18 +172,15 @@ const BlogPage = () => {
           className="flex flex-col gap-6 px-10"
           initial="hidden"
           animate="visible"
-          variants={{
-            visible: {
-              transition: { staggerChildren: 0.1 },
-            },
-          }}
+          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
         >
           {Array.isArray(posts) &&
             posts
               .slice()
               .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
               .map((post) => {
-                const liked = post.likes.includes(user._id);
+                const liked =
+                  Array.isArray(post.likes) && post.likes.includes(user._id);
                 return (
                   <motion.div
                     key={post._id}
@@ -185,11 +191,22 @@ const BlogPage = () => {
                       visible: { opacity: 1, y: 0 },
                     }}
                   >
-                    <Link to={`/posts/${post._id}`}>
-                      <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                        {post.title}
-                      </h2>
-                    </Link>
+                    <div className="flex justify-between">
+                      <Link to={`/posts/${post._id}`}>
+                        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                          {post.title}
+                        </h2>
+                      </Link>
+                      {post.author?._id === user._id && (
+                        <button
+                          onClick={() => handleDeletePost(post._id)}
+                          className="text-sm text-red-500 flex items-center gap-1"
+                        >
+                          <FiTrash2 /> Delete
+                        </button>
+                      )}
+                    </div>
+
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                       {post.body.slice(0, 200)}...
                     </p>
@@ -250,7 +267,7 @@ const BlogPage = () => {
                           <div className="space-y-3">
                             {(commentsMap[post._id] || []).map((comment) => (
                               <div key={comment._id} className="ml-2">
-                                <div className="text-sm text-gray-700 flex justify-between">
+                                <div className="text-sm text-gray-700 flex justify-between items-center">
                                   <span>
                                     <b>{comment.author?.name}</b>:{" "}
                                     {editingComment === comment._id ? (
@@ -270,14 +287,27 @@ const BlogPage = () => {
                                     )}
                                   </span>
                                   {comment.author?._id === user._id && (
-                                    <button
-                                      className="text-xs text-blue-500"
-                                      onClick={() =>
-                                        setEditingComment(comment._id)
-                                      }
-                                    >
-                                      <FiEdit2 />
-                                    </button>
+                                    <div className="flex gap-2 items-center ml-4">
+                                      <button
+                                        className="text-xs text-blue-500"
+                                        onClick={() =>
+                                          setEditingComment(comment._id)
+                                        }
+                                      >
+                                        <FiEdit2 />
+                                      </button>
+                                      <button
+                                        className="text-xs text-red-500"
+                                        onClick={() =>
+                                          handleDeleteComment(
+                                            comment._id,
+                                            post._id
+                                          )
+                                        }
+                                      >
+                                        <FiTrash2 />
+                                      </button>
+                                    </div>
                                   )}
                                 </div>
 

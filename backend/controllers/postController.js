@@ -73,28 +73,49 @@ export const updatePost = async (req, res) => {
 export const deletePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: 'Post not found' });
+    if (!post) return res.status(404).json({ message: "Post not found" });
 
-    if (!post.author.equals(req.user._id) && !req.user.isAdmin) {
-      return res.status(403).json({ message: 'Unauthorized' });
+    if (post.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized to delete this post" });
     }
 
-    await post.deleteOne();
-    res.json({ message: 'Post deleted' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    await Post.deleteOne({ _id: post._id });
+    res.status(200).json({ message: "Post deleted" });
+  } catch (err) {
+    console.error("Delete Post Error:", err.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const createComment = async (req, res) => {
-  const { content } = req.body;
-  const postId = req.params.id;
-  const author = req.user._id;
-  if (!content) return res.status(400).json({ message: 'Comment required' });
-  const comment = await Comment.create({ content, author, post: postId });
-  await Post.findByIdAndUpdate(postId, { $push: { comments: comment._id } });
-  const populated = await comment.populate('author', 'name');
-  res.status(201).json(populated);
+  try {
+    const { id: postId } = req.params;
+    const { text, parentId } = req.body;
+
+    if (!text || text.trim() === "") {
+      return res.status(400).json({ message: "Comment text is required." });
+    }
+
+    const newComment = new Comment({
+      post: postId,
+      author: req.user.id,
+      text,
+      parent: parentId || null,
+    });
+
+    await newComment.save();
+
+    await Post.findByIdAndUpdate(postId, {
+      $push: { comments: newComment._id },
+    });
+
+    const populated = await newComment.populate("author", "name");
+
+    res.status(201).json({ comment: populated });
+  } catch (err) {
+    console.error("🔥 Comment creation failed:", err.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 export const toggleLike = async (req, res) => {
