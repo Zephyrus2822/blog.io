@@ -37,16 +37,16 @@ const Dashboard = () => {
 
   if (!metrics) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="loader">Loading dashboard...</div>
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-purple-900 to-indigo-800">
+        <div className="text-indigo-200">Loading dashboard...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 to-indigo-800 p-8">
       <motion.h1
-        className="text-3xl font-bold text-gray-800 mb-6"
+        className="text-3xl font-bold text-white mb-6"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -58,50 +58,75 @@ const Dashboard = () => {
           {
             label: "Your Posts",
             value: metrics.postsCount,
-            color: "bg-blue-500",
+            color: "bg-indigo-600",
           },
           {
             label: "Total Likes Received",
             value: metrics.likesReceived,
-            color: "bg-green-500",
+            color: "bg-pink-600",
           },
           {
             label: "Your Comments",
             value: metrics.commentsCount,
-            color: "bg-yellow-500",
+            color: "bg-purple-600",
           },
         ].map((card) => (
           <motion.div
             key={card.label}
-            className={`rounded-lg shadow-lg p-6 text-white ${card.color}`}
+            className={`rounded-xl shadow-lg p-6 text-white ${card.color} backdrop-blur-sm bg-opacity-80 border border-white/20`}
             whileHover={{ scale: 1.03 }}
           >
-            <div className="text-sm">{card.label}</div>
+            <div className="text-sm text-indigo-100">{card.label}</div>
             <div className="text-2xl font-semibold">{card.value}</div>
           </motion.div>
         ))}
       </div>
 
       <motion.div
-        className="bg-white rounded-lg shadow-lg p-6"
+        className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-6 border border-white/20"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        <h2 className="text-xl font-bold mb-4 text-gray-800">
+        <h2 className="text-xl font-bold mb-4 text-white">
           Likes Over Time
         </h2>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={metrics.likesTimeline}>
-            <CartesianGrid stroke="#eee" />
-            <XAxis dataKey="date" stroke="#888" />
-            <YAxis stroke="#888" />
-            <Tooltip />
+            <CartesianGrid stroke="#4b5563" strokeDasharray="5 5" />
+            <XAxis 
+              dataKey="date" 
+              stroke="#a5b4fc" 
+              tick={{ fill: '#c7d2fe' }}
+            />
+            <YAxis 
+              stroke="#a5b4fc" 
+              tick={{ fill: '#c7d2fe' }}
+            />
+            <Tooltip 
+              contentStyle={{
+                background: 'rgba(67, 56, 202, 0.9)',
+                borderColor: '#818cf8',
+                borderRadius: '0.5rem',
+                color: '#e0e7ff'
+              }}
+            />
             <Line
               type="monotone"
               dataKey="count"
-              stroke="#00aaff"
+              stroke="#818cf8"
               strokeWidth={3}
-              dot={{ r: 4 }}
+              dot={{ 
+                r: 4,
+                fill: '#6366f1',
+                stroke: '#e0e7ff',
+                strokeWidth: 2
+              }}
+              activeDot={{
+                r: 6,
+                fill: '#a5b4fc',
+                stroke: '#4f46e5',
+                strokeWidth: 2
+              }}
             />
           </LineChart>
         </ResponsiveContainer>
