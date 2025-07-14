@@ -1,5 +1,11 @@
 import { FiEdit, FiUsers, FiTrendingUp, FiBookmark } from "react-icons/fi";
-import { FaTwitter, FaFacebook, FaInstagram, FaLinkedin, FaArrowRight } from "react-icons/fa";
+import {
+  FaTwitter,
+  FaFacebook,
+  FaInstagram,
+  FaLinkedin,
+  FaArrowRight,
+} from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -55,11 +61,13 @@ const Landing = () => {
       <header className="bg-transparent fixed w-full z-50 backdrop-blur-md">
         <div className="container mx-auto px-4 py-6">
           <nav className="flex justify-between items-center">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="text-2xl font-bold text-white hover:text-indigo-200 transition-colors duration-300"
             >
-              <span className="bg-white text-indigo-800 px-2 py-1 rounded-md mr-1">Blog</span>
+              <span className="bg-white text-indigo-800 px-2 py-1 rounded-md mr-1">
+                Blog
+              </span>
               <span className="text-indigo-200">Sphere</span>
             </Link>
             <div className="flex space-x-4 items-center">
@@ -102,24 +110,26 @@ const Landing = () => {
         <div className="absolute bottom-0 right-0 w-60 h-60 bg-purple-900 rounded-full opacity-20 blur-3xl -z-10"></div>
         <div className="container mx-auto text-center max-w-4xl">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6">
-            Where <span className="text-indigo-300">Great Minds</span> Share Ideas
+            Where <span className="text-indigo-300">Great Minds</span> Share
+            Ideas
           </h1>
           <p className="text-xl text-indigo-100 mb-10">
-            Join thousands of writers and readers on BlogSphere - the platform built for meaningful content.
+            Join thousands of writers and readers on BlogSphere - the platform
+            built for meaningful content.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
               to={isLoggedIn ? "/blogpage" : "/signup"}
               className="px-8 py-3.5 bg-indigo-300 text-indigo-900 rounded-lg font-semibold text-lg hover:bg-indigo-200 transition-all shadow-lg hover:shadow-indigo-500/20 flex items-center justify-center gap-2"
             >
-              Start Reading
+              Head to Blogs!
             </Link>
-            <Link
+            {/* <Link
               to="/signup"
               className="px-8 py-3.5 border-2 border-indigo-300 text-indigo-100 rounded-lg font-semibold text-lg hover:border-indigo-200 hover:text-white transition-all flex items-center justify-center gap-2"
             >
               Start Writing
-            </Link>
+            </Link> */}
           </div>
         </div>
       </section>
@@ -169,7 +179,8 @@ const Landing = () => {
             <div className="bg-white/5 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-indigo-400 backdrop-blur-sm">
               <div className="text-yellow-300 mb-4 text-xl">★★★★★</div>
               <p className="text-indigo-100 mb-6 italic">
-                "BlogSphere has completely changed how I share my thoughts. The interface is so clean and intuitive!"
+                "BlogSphere has completely changed how I share my thoughts. The
+                interface is so clean and intuitive!"
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-indigo-500/20 rounded-full mr-4"></div>
@@ -182,7 +193,8 @@ const Landing = () => {
             <div className="bg-white/5 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-indigo-400 backdrop-blur-sm">
               <div className="text-yellow-300 mb-4 text-xl">★★★★★</div>
               <p className="text-indigo-100 mb-6 italic">
-                "I've grown my audience by 300% since switching to BlogSphere. The community engagement is amazing."
+                "I've grown my audience by 300% since switching to BlogSphere.
+                The community engagement is amazing."
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-indigo-500/20 rounded-full mr-4"></div>
@@ -195,7 +207,8 @@ const Landing = () => {
             <div className="bg-white/5 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-indigo-400 backdrop-blur-sm">
               <div className="text-yellow-300 mb-4 text-xl">★★★★☆</div>
               <p className="text-indigo-100 mb-6 italic">
-                "As a food blogger, I appreciate the beautiful formatting options and engaged readership."
+                "As a food blogger, I appreciate the beautiful formatting
+                options and engaged readership."
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-indigo-500/20 rounded-full mr-4"></div>
@@ -216,7 +229,8 @@ const Landing = () => {
             Ready to share your story?
           </h2>
           <p className="text-xl text-indigo-200 max-w-2xl mx-auto mb-10">
-            Join thousands of creators who publish their best work on BlogSphere.
+            Join thousands of creators who publish their best work on
+            BlogSphere.
           </p>
           <Link
             to="/signup"
@@ -233,7 +247,9 @@ const Landing = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             <div>
               <h3 className="text-2xl font-bold mb-4 flex items-center">
-                <span className="bg-white text-indigo-800 px-2 py-1 rounded-md mr-1">Blog</span>
+                <span className="bg-white text-indigo-800 px-2 py-1 rounded-md mr-1">
+                  Blog
+                </span>
                 <span className="text-indigo-200">Sphere</span>
               </h3>
               <p className="text-indigo-200">
@@ -245,17 +261,26 @@ const Landing = () => {
               <h4 className="text-lg font-semibold mb-4 text-white">Company</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link to="/about" className="text-indigo-200 hover:text-white transition">
+                  <Link
+                    to="/about"
+                    className="text-indigo-200 hover:text-white transition"
+                  >
                     About
                   </Link>
                 </li>
                 <li>
-                  <Link to="/careers" className="text-indigo-200 hover:text-white transition">
+                  <Link
+                    to="/careers"
+                    className="text-indigo-200 hover:text-white transition"
+                  >
                     Careers
                   </Link>
                 </li>
                 <li>
-                  <Link to="/blog" className="text-indigo-200 hover:text-white transition">
+                  <Link
+                    to="/blog"
+                    className="text-indigo-200 hover:text-white transition"
+                  >
                     Blog
                   </Link>
                 </li>
@@ -263,20 +288,31 @@ const Landing = () => {
             </div>
 
             <div>
-              <h4 className="text-lg font-semibold mb-4 text-white">Resources</h4>
+              <h4 className="text-lg font-semibold mb-4 text-white">
+                Resources
+              </h4>
               <ul className="space-y-2">
                 <li>
-                  <Link to="/help" className="text-indigo-200 hover:text-white transition">
+                  <Link
+                    to="/help"
+                    className="text-indigo-200 hover:text-white transition"
+                  >
                     Help Center
                   </Link>
                 </li>
                 <li>
-                  <Link to="/guides" className="text-indigo-200 hover:text-white transition">
+                  <Link
+                    to="/guides"
+                    className="text-indigo-200 hover:text-white transition"
+                  >
                     Writing Guides
                   </Link>
                 </li>
                 <li>
-                  <Link to="/community" className="text-indigo-200 hover:text-white transition">
+                  <Link
+                    to="/community"
+                    className="text-indigo-200 hover:text-white transition"
+                  >
                     Community
                   </Link>
                 </li>
@@ -286,20 +322,34 @@ const Landing = () => {
             <div>
               <h4 className="text-lg font-semibold mb-4 text-white">Connect</h4>
               <div className="flex space-x-4 mb-4">
-                <a href="#" className="text-indigo-200 hover:text-white transition">
+                <a
+                  href="#"
+                  className="text-indigo-200 hover:text-white transition"
+                >
                   <FaTwitter size={20} />
                 </a>
-                <a href="#" className="text-indigo-200 hover:text-white transition">
+                <a
+                  href="#"
+                  className="text-indigo-200 hover:text-white transition"
+                >
                   <FaFacebook size={20} />
                 </a>
-                <a href="#" className="text-indigo-200 hover:text-white transition">
+                <a
+                  href="#"
+                  className="text-indigo-200 hover:text-white transition"
+                >
                   <FaInstagram size={20} />
                 </a>
-                <a href="#" className="text-indigo-200 hover:text-white transition">
+                <a
+                  href="#"
+                  className="text-indigo-200 hover:text-white transition"
+                >
                   <FaLinkedin size={20} />
                 </a>
               </div>
-              <p className="text-indigo-200 mb-2">Subscribe to our newsletter</p>
+              <p className="text-indigo-200 mb-2">
+                Subscribe to our newsletter
+              </p>
               <div className="flex">
                 <input
                   type="email"

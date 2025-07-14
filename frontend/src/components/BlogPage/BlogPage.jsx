@@ -211,8 +211,8 @@ const BlogPage = () => {
                       )}
                     </div>
 
-                    <p className="text-indigo-100 text-sm mb-4 line-clamp-3">
-                      {post.body.slice(0, 200)}...
+                    <p className="text-indigo-100 text-sm mb-4 whitespace-pre-wrap">
+                      {post.body}
                     </p>
 
                     <div className="flex justify-between text-sm text-indigo-200 mb-3">
@@ -277,7 +277,10 @@ const BlogPage = () => {
                               <div key={comment._id} className="ml-2">
                                 <div className="text-sm text-indigo-100 flex justify-between items-center">
                                   <span>
-                                    <b className="text-white">{comment.author?.name}</b>:{" "}
+                                    <b className="text-white">
+                                      {comment.author?.name}
+                                    </b>
+                                    :{" "}
                                     {editingComment === comment._id ? (
                                       <input
                                         defaultValue={comment.text}
@@ -337,7 +340,10 @@ const BlogPage = () => {
                                       key={reply._id}
                                       className="ml-6 mt-1 text-indigo-200 text-sm border-l border-white/20 pl-2"
                                     >
-                                      <b className="text-white">{reply.author?.name}</b>: {reply.text}
+                                      <b className="text-white">
+                                        {reply.author?.name}
+                                      </b>
+                                      : {reply.text}
                                     </div>
                                   ))}
                               </div>
@@ -381,7 +387,6 @@ const BlogPage = () => {
       <motion.div
         onClick={() => setModalIsOpen(true)}
         className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[60%] bg-white/10 backdrop-blur-md shadow-lg border border-indigo-400 hover:border-indigo-300 text-indigo-200 px-6 py-4 rounded-xl cursor-text transition hover:shadow-2xl hover:text-white"
-        
       >
         ✍️ Click here to write a new blog post...
       </motion.div>
