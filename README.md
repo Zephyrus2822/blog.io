@@ -2,7 +2,7 @@
   <a href="" rel="noopener">
  <img src="https://i.postimg.cc/Mps1Sxmg/image.png" alt="Project logo"></a>
 </p>
-<h3 align="center">BlogSphere - Production-Grade Blogging Platform</h3>
+<h3 align="center">BlogSphere - Production-Grade Blogging Platform!</h3>
 
 <div align="center">
 
